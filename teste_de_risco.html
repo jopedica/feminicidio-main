@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Teste de Risco - Vozes Femininas</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <div class="container header-content">
+      <a href="index.html" class="logo" aria-label="Página inicial Vozes Femininas">
+        <img src="https://placehold.co/200x50/8a2be2/ffffff?text=Vozes+Femininas" alt="Logo do projeto Vozes Femininas">
+      </a>
+      <nav class="main-nav" aria-label="Principal">
+        <a href="index.html">Home</a>
+        <a href="o_que_e.html">O que é?</a>
+        <a href="ajuda.html">Ajuda</a>
+        <a href="leis.html">Leis</a>
+        <a href="teste_de_risco.html" class="active">Teste de Risco</a>
+        <a href="contato.html">Contato</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="risk-page">
+      <div class="container container-narrow">
+
+        <h1 class="risk-title">Teste de Avaliação de Risco</h1>
+        <p class="risk-intro">
+          Responda às perguntas abaixo para avaliar o risco de violência em seu relacionamento. O teste é anônimo.
+        </p>
+
+        <!-- chips/ajuda -->
+        <div class="risk-chips">
+          <span class="chip">Escala normalizada para <strong>máximo 34 pontos</strong></span>
+          <button id="btnPesos" type="button" class="chip chip--btn">Ver pesos por pergunta</button>
+        </div>
+
+        <!-- Card do formulário -->
+        <div class="card card--lilac">
+          <form id="riskAssessmentForm" class="risk-form">
+
+            <!-- Template de pergunta -->
+            <template id="tplPergunta">
+              <div class="qa-item">
+                <p class="qa-question"></p>
+                <div class="qa-options">
+                  <label class="radio">
+                    <input type="radio" value="sim">
+                    <span>Sim</span>
+                  </label>
+                  <label class="radio">
+                    <input type="radio" value="nao">
+                    <span>Não</span>
+                  </label>
+                </div>
+              </div>
+            </template>
+
+            <div id="listaPerguntas" class="qa-list"></div>
+
+            <!-- 3A: regra especial -->
+            <div class="qa-item qa-special">
+              <label class="checkbox">
+                <input type="checkbox" id="q3a">
+                <span><strong>3A.</strong> Se nunca morou com ele, marque essa opção.</span>
+              </label>
+              <p class="hint">Obs.: ao marcar 3A, a pergunta 3 é desabilitada automaticamente.</p>
+            </div>
+
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary">Ver Resultado</button>
+            </div>
+          </form>
+
+          <!-- Resultado -->
+          <div id="resultArea" class="risk-result" hidden>
+            <h3 id="resultTitle" class="risk-result__title"></h3>
+            <p class="risk-result__score">
+              Sua pontuação: <span id="scoreValue" class="kbd"></span> / 34
+              <span id="scorePct" class="risk-result__pct"></span>
+            </p>
+            <p id="resultText" class="risk-result__text"></p>
+
+            <div class="risk-debug" id="debugBox" hidden>
+              <p class="risk-debug__title">Como calculamos:</p>
+              <pre id="debugText"></pre>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container text-center">
+      <p>&copy; 2024 Vozes Femininas. Todos os direitos reservados.</p>
+      <div class="flex flex-center">
+        <a href="#">Facebook</a>
+        <a href="#">Instagram</a>
+        <a href="#">X (Twitter)</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Script da página -->
+  <script>
+  // --- Perguntas 1..20 (Q3A é separada) ---
+  const perguntas = [
+    '1. A violência física aumentou em gravidade ou frequência no último ano?',
+    '2. Ele possui arma de fogo?',
+    '3. Você o deixou após terem morado juntos no último ano?',
+    '4. Ele está desempregado?',
+    '5. Já usou uma arma potencialmente letal contra você ou ameaçou com arma letal?',
+    '6. Ele ameaça te matar?',
+    '7. Ele evitou ser preso por violência doméstica?',
+    '8. Você tem um filho que não é dele?',
+    '9. Ele já a forçou a ter relações sexuais quando você não queria?',
+    '10. Ele tenta te estrangular/sufocar?',
+    '11. Ele usa drogas ilegais?',
+    '12. Ele é alcoólatra ou bebedor problemático?',
+    '13. Ele controla a maior parte das suas atividades diárias?',
+    '14. Ele é violentamente e constantemente ciumento?',
+    '15. Você já foi agredida por ele durante a gravidez?',
+    '16. Ele já ameaçou ou tentou cometer suicídio?',
+    '17. Ele ameaça ferir seus filhos?',
+    '18. Você tem medo de que ele possa te matar?',
+    '19. Ele te persegue, espiona ou deixa mensagens ameaçadoras?',
+    '20. Você já ameaçou ou tentou cometer suicídio?'
+  ];
+
+  // Pesos extras (teto da escala = 34)
+  const pesosExtras = { q2:4, q3:4, q4:3, q5:2, q6:2, q7:2, q8:1, q9:1 };
+  const MAXIMO = 34;
+
+  // Renderização das perguntas
+  (function renderPerguntas(){
+    const cont = document.getElementById('listaPerguntas');
+    const tpl  = document.getElementById('tplPergunta');
+    perguntas.forEach((texto, i) => {
+      const n = i + 1;
+      const frag = tpl.content.cloneNode(true);
+      frag.querySelector('.qa-question').textContent = texto;
+
+      const radios = frag.querySelectorAll('input[type="radio"]');
+      radios.forEach(r => r.name = 'q' + n);
+
+      cont.appendChild(frag);
+    });
+  })();
+
+  // Regra 3A: desabilitar Q3 quando marcada
+  const q3a = document.getElementById('q3a');
+  q3a.addEventListener('change', () => {
+    const radiosQ3 = document.querySelectorAll('input[name="q3"]');
+    if (q3a.checked) {
+      radiosQ3.forEach(r => { r.checked = false; r.disabled = true; });
+    } else {
+      radiosQ3.forEach(r => { r.disabled = false; });
+    }
+  });
+
+  // Tooltip simples de pesos
+  document.getElementById('btnPesos').addEventListener('click', () => {
+    alert([
+      'Peso base: cada "Sim" nas Q1..Q20 = 1 ponto (3A não pontua).',
+      'Pesos extras: Q2(+4), Q3(+4), Q4(+3), Q5(+2), Q6(+2), Q7(+2), Q8(+1), Q9(+1).',
+      'Regra especial: marcar 3A aplica -3 (e torna Q3 incompatível).',
+      'Máximo da escala: 34.'
+    ].join('\n'));
+  });
+
+  // Cálculo do resultado
+  $('#riskAssessmentForm').on('submit', function(e){
+    e.preventDefault();
+
+    let base = 0, extras = 0;
+    for (let i = 1; i <= 20; i++) {
+      const name = 'q' + i;
+      const yes = $(`input[name="${name}"][value="sim"]`).is(':checked');
+      if (yes) {
+        base += 1;
+        if (pesosExtras[name]) extras += pesosExtras[name];
+      }
+    }
+
+    if (q3a.checked) extras -= 3;
+
+    let score = base + extras;
+    if (score > MAXIMO) score = MAXIMO;
+
+    const pct = Math.round((score / MAXIMO) * 100);
+
+    // Render
+    $('#scoreValue').text(score);
+    $('#scorePct').text(`(${pct}%)`);
+
+    const $title = $('#resultTitle').removeClass('risk--var risk--up risk--grave risk--ext');
+    const $text  = $('#resultText');
+
+    if (score <= 7) {
+      $title.text('Risco Variável').addClass('risk--var');
+      $text.html('Seu resultado indica <strong>risco variável</strong>. Permaneça vigilante e procure informações sobre seus direitos.');
+    } else if (score <= 13) {
+      $title.text('Risco Aumentado').addClass('risk--up');
+      $text.html('Há <strong>risco aumentado</strong>. Considere buscar apoio e orientação pelo <strong>180</strong>.');
+    } else if (score <= 17) {
+      $title.text('Risco Grave').addClass('risk--grave');
+      $text.html('<strong>Atenção!</strong> Indícios de <strong>risco grave</strong>. Procure ajuda especializada. Ligue <strong>180</strong> ou procure uma DEAM.');
+    } else {
+      $title.text('Risco Extremo').addClass('risk--ext');
+      $text.html('<strong>PERIGO!</strong> Indícios de <strong>risco extremo</strong>. Em emergência, ligue <strong>190</strong>; para orientação, <strong>180</strong>.');
+    }
+
+    $('#debugBox').prop('hidden', false);
+    $('#debugText').text(`Base = ${base}\nExtras = ${extras}\nTotal (ajustado ao teto 34) = ${score}`);
+
+    $('#resultArea').prop('hidden', false);
+    window.scrollTo({ top: document.getElementById('resultArea').offsetTop - 100, behavior: 'smooth' });
+  });
+  </script>
+
+  <script src="script.js"></script>
+</body>
+</html>
