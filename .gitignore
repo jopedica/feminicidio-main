@@ -1,0 +1,25 @@
+# Bytecode do Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Ambiente virtual
+venv/
+.env/
+
+# Arquivos de configuração locais
+*.sqlite3
+instance/
+*.db
+
+# Configurações de editor/IDE
+.vscode/
+.idea/
+
+# Arquivos do sistema
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log

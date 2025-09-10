@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contato - Vozes Femininas</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/style.css" /></head>
+</head>
+<body>
+{% include "partials/header.html" %}
+
+
+  <main>
+    <section class="page-section">
+      <div class="container container-narrow">
+
+        <!-- Aviso -->
+        <div class="alert alert--danger text-center">
+          <h1 class="alert-title">ATENÇÃO: CANAL NÃO EMERGENCIAL</h1>
+          <p>
+            Este formulário de contato é <strong>APENAS</strong> para dúvidas, sugestões ou parcerias sobre o projeto.
+            <strong>NÃO</strong> o utilize para denúncias ou pedidos de ajuda urgente.
+          </p>
+          <p class="mt-8">
+            Se você está em perigo, ligue para
+            <a href="tel:190" class="underline">190</a> (Polícia Militar) ou
+            <a href="tel:180" class="underline">180</a> (Central de Atendimento à Mulher).
+          </p>
+        </div>
+
+        <!-- Formulário -->
+        <div class="card card--lilac">
+          <h2 class="card-title text-center">Fale Conosco</h2>
+          <p class="intro text-center">
+            Tem alguma dúvida sobre o projeto, uma sugestão para melhorá-lo ou interesse em uma parceria?
+            Preencha o formulário abaixo.
+          </p>
+
+          <form action="#" method="post" class="form">
+            <div class="form-grid">
+              <div class="form-field">
+                <label for="name">Seu Nome</label>
+                <input type="text" name="name" id="name" class="input" required>
+              </div>
+
+              <div class="form-field">
+                <label for="email">Seu E-mail</label>
+                <input type="email" name="email" id="email" class="input" required>
+              </div>
+
+              <div class="form-field form-field--full">
+                <label for="message">Sua Mensagem</label>
+                <textarea id="message" name="message" rows="5" class="textarea" required></textarea>
+              </div>
+            </div>
+
+            <div class="form-actions text-center">
+              <button type="submit" class="btn btn-primary">Enviar Mensagem</button>
+            </div>
+          </form>
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container text-center">
+      <p>&copy; 2024 Vozes Femininas. Todos os direitos reservados.</p>
+      <div class="flex flex-center">
+        <a href="#">Facebook</a>
+        <a href="#">Instagram</a>
+        <a href="#">X (Twitter)</a>
+      </div>
+    </div>
+  </footer>
+
+<script src="/static/script.js"></script></body>
+</html>

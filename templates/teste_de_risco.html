@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Teste de Risco - Vozes Femininas</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/style.css" />
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+ {% include "partials/header.html" %}
+
+  <main>
+    <section class="risk-page">
+      <div class="container container-narrow">
+
+        <h1 class="risk-title">Teste de Avaliação de Risco</h1>
+        <p class="risk-intro">
+          Responda às perguntas abaixo para avaliar o risco de violência em seu relacionamento. O teste é anônimo.
+        </p>
+
+        <div class="risk-chips">
+          <span class="chip">Escala normalizada para <strong>máximo 34 pontos</strong></span>
+          <button id="btnPesos" type="button" class="chip chip--btn">Ver pesos por pergunta</button>
+        </div>
+
+        <div class="card card--lilac">
+          <form id="riskAssessmentForm" class="risk-form">
+
+            <template id="tplPergunta">
+              <div class="qa-item">
+                <p class="qa-question"></p>
+                <div class="qa-options">
+                  <label class="radio">
+                    <input type="radio" value="sim">
+                    <span>Sim</span>
+                  </label>
+                  <label class="radio">
+                    <input type="radio" value="nao">
+                    <span>Não</span>
+                  </label>
+                </div>
+              </div>
+            </template>
+
+            <div id="listaPerguntas" class="qa-list"></div>
+
+            <!-- 3A: regra especial -->
+            <div class="qa-item qa-special">
+              <label class="checkbox">
+                <input type="checkbox" id="q3a">
+                <span><strong>3A.</strong> Se nunca morou com ele, marque essa opção.</span>
+              </label>
+              <p class="hint">Obs.: ao marcar 3A, a pergunta 3 é desabilitada automaticamente.</p>
+            </div>
+
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary">Ver Resultado</button>
+            </div>
+          </form>
+
+          <!-- Resultado -->
+          <div id="resultArea" class="risk-result" hidden>
+            <h3 id="resultTitle" class="risk-result__title"></h3>
+            <p class="risk-result__score">
+              Sua pontuação: <span id="scoreValue" class="kbd"></span> / 34
+              <span id="scorePct" class="risk-result__pct"></span>
+            </p>
+            <p id="resultText" class="risk-result__text"></p>
+
+            <div class="risk-debug" id="debugBox" hidden>
+              <p class="risk-debug__title">Como calculamos:</p>
+              <pre id="debugText"></pre>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container text-center">
+      <p>&copy; 2024 Vozes Femininas. Todos os direitos reservados.</p>
+      <div class="flex flex-center">
+        <a href="#">Facebook</a>
+        <a href="#">Instagram</a>
+        <a href="#">X (Twitter)</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script>
+    // Pesos extras por CODE (independe do id da pergunta no banco)
+    const EXTRA_BY_CODE = {
+      Q02: 4, Q03: 4, Q04: 3,
+      Q05: 2, Q06: 2, Q07: 2,
+      Q08: 1, Q09: 1
+    };
+    const MAXIMO = 34;
+
+    // Tooltip simples de pesos
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('btnPesos').addEventListener('click', () => {
+        alert([
+          'Peso base: cada "Sim" nas Q1..Q20 = 1 ponto (3A não pontua).',
+          'Pesos extras: Q2(+4), Q3(+4), Q4(+3), Q5(+2), Q6(+2), Q7(+2), Q8(+1), Q9(+1).',
+          'Regra especial: marcar 3A aplica -3 (e torna Q3 incompatível).',
+          'Máximo da escala (exibição): 34.'
+        ].join('\n'));
+      });
+    });
+
+    // Busca as perguntas do backend e renderiza no formulário
+    async function carregarPerguntasEExibir() {
+      const res = await fetch('/api/risk/questions');
+      const lista = await res.json(); // [{id, code, question_text, weight, display_order}]
+      window._perguntas = lista;
+
+      const cont = document.getElementById('listaPerguntas');
+      const tpl  = document.getElementById('tplPergunta');
+      cont.innerHTML = '';
+
+      lista
+        .sort((a,b) => (a.display_order ?? a.id) - (b.display_order ?? b.id))
+        .forEach((q, idx) => {
+          const frag = tpl.content.cloneNode(true);
+          frag.querySelector('.qa-question').textContent = `${idx+1}. ${q.question_text}`;
+          // name usa o id do banco para casar com as respostas no backend
+          frag.querySelectorAll('input[type="radio"]').forEach(r => r.name = 'q' + q.id);
+          cont.appendChild(frag);
+        });
+    }
+    carregarPerguntasEExibir();
+
+    // Regra 3A: desabilita Q3 quando marcada (assumindo code Q03 => id=3; se não, ajusta seletor)
+    const q3a = document.getElementById('q3a');
+    q3a.addEventListener('change', () => {
+      // aqui usamos name="q3" — funciona se a pergunta com code Q03 tem id 3.
+      // se não tiver, você pode localizar a pergunta com code 'Q03' em window._perguntas e usar o id dela:
+      // const q3 = (window._perguntas || []).find(p => p.code === 'Q03'); const id = q3?.id; const radiosQ3 = document.querySelectorAll(`input[name="q${id}"]`);
+      const radiosQ3 = document.querySelectorAll('input[name="q3"]');
+      if (q3a.checked) {
+        radiosQ3.forEach(r => { r.checked = false; r.disabled = true; });
+      } else {
+        radiosQ3.forEach(r => { r.disabled = false; });
+      }
+    });
+
+    // Cálculo, exibição e envio ao backend
+    $('#riskAssessmentForm').on('submit', async function(e){
+      e.preventDefault();
+
+      // === cálculo local (base + extras; teto 34 para exibição) ===
+      let base = 0, extras = 0;
+
+      for (const q of (window._perguntas || [])) {
+        const name = 'q' + q.id;
+        const yes = $(`input[name="${name}"][value="sim"]`).is(':checked');
+        if (yes) {
+          base += 1;
+          // extras pelo CODE (Q02..Q09)
+          extras += (EXTRA_BY_CODE[q.code] || 0);
+        }
+      }
+      if (q3a.checked) extras -= 3;
+
+      let score = base + extras;
+      if (score > MAXIMO) score = MAXIMO;
+
+      const pct = Math.round((score / MAXIMO) * 100);
+
+      // === renderização do resultado ===
+      $('#scoreValue').text(score);
+      $('#scorePct').text(`(${pct}%)`);
+
+      const $title = $('#resultTitle').removeClass('risk--var risk--up risk--grave risk--ext');
+      const $text  = $('#resultText');
+
+      if (score <= 7) {
+        $title.text('Risco Variável').addClass('risk--var');
+        $text.html('Seu resultado indica <strong>risco variável</strong>. Permaneça vigilante e procure informações sobre seus direitos.');
+      } else if (score <= 13) {
+        $title.text('Risco Aumentado').addClass('risk--up');
+        $text.html('Há <strong>risco aumentado</strong>. Considere buscar apoio e orientação pelo <strong>180</strong>.');
+      } else if (score <= 17) {
+        $title.text('Risco Grave').addClass('risk--grave');
+        $text.html('<strong>Atenção!</strong> Indícios de <strong>risco grave</strong>. Procure ajuda especializada. Ligue <strong>180</strong> ou procure uma DEAM.');
+      } else {
+        $title.text('Risco Extremo').addClass('risk--ext');
+        $text.html('<strong>PERIGO!</strong> Indícios de <strong>risco extremo</strong>. Em emergência, ligue <strong>190</strong>; para orientação, <strong>180</strong>.');
+      }
+
+      $('#debugBox').prop('hidden', false);
+      $('#debugText').text(`Base = ${base}\nExtras = ${extras}\nTotal (ajustado ao teto 34) = ${score}`);
+      $('#resultArea').prop('hidden', false);
+      window.scrollTo({ top: document.getElementById('resultArea').offsetTop - 100, behavior: 'smooth' });
+
+      // === envio ao backend (só salva se logado) ===
+      try {
+        const answers = (window._perguntas || []).map(q => {
+          const marcado = document.querySelector(`input[name="q${q.id}"]:checked`);
+          return { question_id: q.id, answer_bool: !!marcado && marcado.value === 'sim' };
+        });
+
+        // >>> Mudança 1: enviar também o q3a
+        const res = await fetch('/api/risk/submit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ answers, q3a: q3a.checked })
+        });
+
+        const data = await res.json();
+        if (res.status === 401) {
+          alert('Você precisa estar logado para salvar o teste. Vamos para o cadastro.');
+          location.href = '/cadastro';
+          return;
+        }
+        if (!res.ok) {
+          console.warn(data);
+          alert(data.error || 'Erro ao enviar teste');
+          return;
+        }
+        console.log('Salvo no BD:', data);
+      } catch (err) {
+        console.error(err);
+        alert('Falha ao comunicar com o servidor.');
+      }
+    });
+  </script>
+
+  <script src="/static/script.js"></script>
+</body>
+</html>

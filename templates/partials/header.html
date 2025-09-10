@@ -1,0 +1,26 @@
+<!-- Header -->
+<header class="site-header">
+  <div class="container header-content">
+    <a href="/" class="logo" aria-label="Página inicial Vozes Femininas">
+      <img src="/static/logo.svg" alt="Logo do projeto Vozes Femininas" />
+    </a>
+    <nav class="main-nav" aria-label="Principal">
+      <a href="/" {% if request.path == '/' %}class="active"{% endif %}>Home</a>
+      <a href="/o-que-e" {% if request.path.startswith('/o-que-e') %}class="active"{% endif %}>O que é?</a>
+      <a href="/ajuda" {% if request.path.startswith('/ajuda') %}class="active"{% endif %}>Ajuda</a>
+      <a href="/leis" {% if request.path.startswith('/leis') %}class="active"{% endif %}>Leis</a>
+      <a href="/teste-de-risco" {% if request.path.startswith('/teste-de-risco') %}class="active"{% endif %}>Teste de Risco</a>
+      <a href="/contato" {% if request.path.startswith('/contato') %}class="active"{% endif %}>Contato</a>
+
+      {% if current_user %}
+        <span class="user-pill">
+          <strong>{{ current_user.name }}</strong>
+          <small>{{ current_user.email }}</small>
+        </span>
+        <button id="btnLogout" class="btn btn-ghost" type="button">Sair</button>
+      {% else %}
+        <a href="/cadastro" {% if request.path.startswith('/cadastro') %}class="active"{% endif %}>Cadastro</a>
+      {% endif %}
+    </nav>
+  </div>
+</header>

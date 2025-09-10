@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Leis de Proteção - Vozes Femininas</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/style.css" /></head>
+</head>
+<body>
+{% include "partials/header.html" %}
+
+
+  <main>
+    <section class="laws-page">
+      <div class="container container-narrow">
+        <h1 class="laws-title">Conheça Seus Direitos</h1>
+        <p class="laws-intro">
+          A legislação brasileira possui mecanismos importantes para a proteção da mulher. Conhecer as leis é o primeiro passo para garantir sua segurança e lutar por justiça.
+        </p>
+
+        <div class="laws-grid">
+
+          <!-- Lei Maria da Penha -->
+          <article class="card card--lilac law-card">
+            <h2 class="law-heading">Lei Maria da Penha (Lei nº 11.340/2006)</h2>
+            <p>
+              Considerada um marco na luta contra a violência doméstica, a Lei Maria da Penha é a principal ferramenta de proteção para mulheres. Ela não trata apenas da agressão física, mas reconhece diversas formas de violência.
+            </p>
+
+            <div class="law-subblock">
+              <h3 class="law-subtitle">Tipos de violência definidos pela Lei:</h3>
+              <ul class="law-list">
+                <li><strong>Física:</strong> ofensa à integridade ou saúde corporal.</li>
+                <li><strong>Psicológica:</strong> ameaça, humilhação, manipulação, isolamento, perseguição, chantagem etc.</li>
+                <li><strong>Sexual:</strong> relações forçadas, impedir uso de métodos contraceptivos, forçar casamento/gravidez.</li>
+                <li><strong>Patrimonial:</strong> subtração, retenção, destruição de bens, documentos, instrumentos de trabalho.</li>
+                <li><strong>Moral:</strong> calúnia, difamação e injúria.</li>
+              </ul>
+            </div>
+
+            <div class="law-subblock">
+              <h3 class="law-subtitle">Medidas protetivas de urgência:</h3>
+              <ul class="law-list">
+                <li>Afastamento imediato do agressor do lar.</li>
+                <li>Proibição de contato e aproximação.</li>
+                <li>Suspensão do porte de armas.</li>
+                <li>Proteção patrimonial e guarda de filhos, entre outras.</li>
+              </ul>
+            </div>
+          </article>
+
+          <!-- Lei do Feminicídio -->
+          <article class="card law-card">
+            <h2 class="law-heading">Lei do Feminicídio (Lei nº 13.104/2015)</h2>
+            <p>
+              Esta lei alterou o Código Penal para incluir o feminicídio como qualificadora do homicídio. Quando uma mulher é assassinada por razões de sua condição de gênero, o crime é considerado hediondo e recebe penas mais severas.
+            </p>
+
+            <div class="law-subpanel">
+              <h3 class="law-subtitle">O que caracteriza o feminicídio?</h3>
+              <p class="law-text">
+                É o assassinato de mulheres cometido em razão do gênero, isto é, quando a morte ocorre por discriminação ou violência de gênero (no contexto de violência doméstica e familiar, menosprezo ou discriminação à condição de mulher). A pena é de <strong>12 a 30 anos</strong> de reclusão, com agravantes em situações como gestação, presença de descendentes, entre outras previstas em lei.
+              </p>
+            </div>
+          </article>
+
+          <!-- Outras Leis -->
+          <article class="card card--lilac law-card">
+            <h2 class="law-heading">Outras Leis e Medidas de Proteção</h2>
+            <p>
+              Além das duas principais leis, outras normas complementam a rede de proteção à mulher:
+            </p>
+            <ul class="law-list">
+              <li>
+                <strong>Lei do Minuto Seguinte (Lei nº 12.845/2013):</strong>
+                garante atendimento emergencial, integral e gratuito no SUS às vítimas de violência sexual, incluindo profilaxia de gravidez e ISTs.
+              </li>
+              <li>
+                <strong>Medidas Protetivas de Urgência:</strong>
+                previstas na Lei Maria da Penha; são ordens judiciais para proteger a mulher (afastamento do agressor, proibição de contato, entre outras).
+              </li>
+            </ul>
+          </article>
+
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container text-center">
+      <p>&copy; 2024 Vozes Femininas. Todos os direitos reservados.</p>
+      <div class="flex flex-center">
+        <a href="#">Facebook</a>
+        <a href="#">Instagram</a>
+        <a href="#">X (Twitter)</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

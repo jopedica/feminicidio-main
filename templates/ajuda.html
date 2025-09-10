@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Como Procurar Ajuda - Vozes Femininas</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="/static/style.css"/></head>
+<body>
+{% include "partials/header.html" %}
+
+
+  <main>
+    <section class="help-page">
+      <div class="container container-narrow">
+
+        <div class="help-header">
+          <h1 class="help-title">Onde e Como Procurar Ajuda</h1>
+
+          <!-- Alerta de emergência -->
+          <div class="alert alert--danger help-alert text-center">
+            <p><strong>Perigo imediato?</strong> Ligue para a Polícia Militar: <a href="tel:190" class="underline">190</a>.</p>
+            <p>Para orientação e denúncias, canal nacional: <a href="tel:180" class="underline">180</a>.</p>
+            <div class="phone-badges">
+              <span class="badge badge--danger">190</span>
+              <span class="badge badge--violet">180</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Conteúdo -->
+        <div class="help-grid">
+
+          <!-- Card 1 -->
+          <article class="help-card help-card--lilac">
+            <h2>1. Ligue 180 – Central de Atendimento à Mulher</h2>
+            <p>O <strong>Ligue 180</strong> é o principal canal de atendimento para mulheres em situação de violência no Brasil.</p>
+            <ul class="help-list">
+              <li>Atendimento 24 horas, gratuito e confidencial.</li>
+              <li>Orientação sobre direitos e encaminhamento a serviços de proteção.</li>
+              <li>Atuação em todo o território nacional.</li>
+            </ul>
+          </article>
+
+          <!-- Card 2 -->
+          <article class="help-card">
+            <h2>2. Delegacias e Serviços de Proteção</h2>
+            <p>Procure a <strong>Delegacia da Mulher (DEAM)</strong> mais próxima — ou qualquer delegacia — para registrar ocorrência e solicitar medidas protetivas.</p>
+            <ul class="help-list">
+              <li><strong>Casa da Mulher Brasileira</strong> (em capitais selecionadas) com atendimento integrado.</li>
+              <li><strong>Defensoria Pública</strong> e <strong>Ministério Público</strong> para orientação jurídica.</li>
+              <li><strong>CRAS/CREAS</strong> para acolhimento e assistência social.</li>
+            </ul>
+          </article>
+
+          <!-- Card 3 -->
+          <article class="help-card">
+            <h2>3. Canais Online e Aplicativos</h2>
+            <p>Em muitos estados, é possível registrar boletim de ocorrência online ou acionar a polícia por aplicativos oficiais.</p>
+            <ul class="help-list">
+              <li><strong>Disque 100</strong> para violações de direitos humanos.</li>
+              <li>Aplicativos das Polícias Civil/Militar do seu estado (quando disponíveis).</li>
+              <li>Ouvidorias e canais de denúncia eletrônica.</li>
+            </ul>
+          </article>
+
+          <!-- Card 4 -->
+          <article class="help-card help-card--lilac">
+            <h2>4. Como Ajudar Alguém</h2>
+            <p>Se você suspeita que uma amiga, familiar ou vizinha sofre violência, você pode:</p>
+            <ul class="help-list">
+              <li><strong>Escutar sem julgar</strong> e oferecer um espaço seguro.</li>
+              <li><strong>Informar</strong> sobre o 180, 190 e serviços de apoio.</li>
+              <li><strong>Não pressionar</strong> — a decisão de denunciar é dela; ofereça apoio.</li>
+              <li><strong>Emergência</strong>: ouviu agressão? Ligue <strong>190</strong>.</li>
+            </ul>
+          </article>
+
+          <div class="safety-callout">
+            <h3>Importante: sua segurança digital</h3>
+            <p>Se você teme monitoramento, use a janela anônima e <strong>limpe o histórico</strong> após a visita. Atalho: <strong>Ctrl + Shift + Del</strong> (ou equivalente no seu dispositivo).</p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container text-center">
+      <p>&copy; 2024 Vozes Femininas. Todos os direitos reservados.</p>
+      <div class="flex flex-center">
+        <a href="#">Facebook</a>
+        <a href="#">Instagram</a>
+        <a href="#">X (Twitter)</a>
+      </div>
+    </div>
+  </footer>
+
+<script src="/static/script.js"></script></body>
+</html>
